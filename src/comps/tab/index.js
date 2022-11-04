@@ -18,11 +18,11 @@ const Tab = ({children, active}) => {
 
     return (
         <div className=" w-full bg-white rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <ul className="text-sm font-medium text-center text-gray-500 rounded-lg divide-x divide-gray-200 sm:flex dark:divide-gray-600 dark:text-gray-400">
+            <ul className="overflow-hidden text-sm font-medium text-center text-gray-500 rounded-t-lg divide-x divide-gray-200 sm:flex dark:divide-gray-600 dark:text-gray-400">
                 {
                     TabsData.map(({tab}, idx) => (
                         <li className=" w-full ">
-                            <a className={`inline-block p-4 w-full bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600 ${idx === ActiveTab ? "active" : ""}`} href='#' onClick={() => setActiveTab(idx)}>
+                            <a className={` inline-block p-4 w-full bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600 ${idx === ActiveTab ? "active" : ""}`} href='#' onClick={() => setActiveTab(idx)}>
                                 {tab}
                             </a>
                         </li>
