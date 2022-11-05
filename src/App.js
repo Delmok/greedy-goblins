@@ -27,7 +27,7 @@ useEffect(() => {
   axios({
     method: 'post',
     url: 'https://goglins.vercel.app/GenerateUser',
-    data: {"nonce": randomString, "signature": "temp", "address": "temp"},
+    data: {"nonce": randomString, "signature": "temps", "address": "temp"},
     config: { headers: {'Content-Type': 'multipart/form-data'}}
   }).then(function (response) {
     templogin = response.data.token;
