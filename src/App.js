@@ -24,28 +24,17 @@ const App = () =>{
 //'Access-Control-Allow-Origin'
 
 useEffect(() => {
-  // axios({
-  //   method: 'post',
-  //   url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
-  //   data: {"nonce": randomString, "signature": "temps", "address": "temp"},
-  //   config: { headers: {"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*'}}
-  // }).then(function (response) {
-  //   templogin = response.data.token;
-  //   if(!templogin) return;
-  //   updateStats();
-  // }).catch(function (response) {
-  //   console.log(response.data['data']);
-  // });
-  axios.post('https://node-express-vercel-eight.vercel.app/generateuser', {
-    "nonce": randomString,
-     "signature": "temps",
-      "address": "temp"
-    })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
+  axios({
+    method: 'post',
+    url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
+    data: {"nonce": randomString, "signature": "temps", "address": "temp"},
+    config: { headers: {"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*'}}
+  }).then(function (response) {
+    templogin = response.data.token;
+    if(!templogin) return;
+    updateStats();
+  }).catch(function (response) {
+    console.log(response.data['data']);
   });
 }, []);
   async function updateStats(){
