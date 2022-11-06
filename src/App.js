@@ -4,9 +4,12 @@ import { ethers } from 'ethers';
 import Tab from './comps/tab';
 import axios from 'axios';
 import truncateEthAddress from 'truncate-eth-address'
+import Cookies from 'universal-cookie';
 
 const randomString = generateRandomID(32);
+const cookies = new Cookies();
 let templogin = null;
+
 
 
 const App = () =>{
@@ -14,10 +17,13 @@ const App = () =>{
   const [Eggs, setEggs] = useState(0);
   const [Workers, setWorkers] = useState(0);
   const [Wood, setWood] = useState(0);
-  const [Address, setAddress] = useState(null);
+  const [Address, setAddress] = useState('Goblin King');
 //SELECT * FROM users WHERE address='0x3258033547e20C6aF4890D8d86B3F81AB672B1F2'
 //'Access-Control-Allow-Origin'
-  
+if (cookies.get('refreshToken')){
+  templogin = cookies.get('refreshToken');
+}
+
 const tabContent = [{
   title:"Stats",
   content: 
@@ -56,23 +62,49 @@ const tabContent = [{
      </div>
 }];
 
-useEffect(() => {
-  axios({
-    method: 'post',
-    url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
-    data: {"nonce": randomString, "signature": "temps", "address": "temp"},
-    config: { headers: {"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*'}}
-  }).then(function (response) {
-    templogin = response.data.token;
-    if(!templogin) return;
+  checkCookies();
+  useEffect(() => {
+
+    if(templogin) return;
+
+    axios({
+      method: 'post',
+      url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
+      data: {"nonce": randomString, "signature": "temps", "address": "temp"},
+      config: { headers: {"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*'}}
+    }).then(function (response) {
+      if(!response) return;
+      if(!templogin){
+        templogin = response.data.token;
+        updateStats();
+        checkCookies();
+      }else{
+        updateStats();
+        checkCookies();
+      };
+    }).catch(function (response) {
+      console.log(response.data['data']);
+    });
+
+  },[]);
+
+  useEffect(() => {
     updateStats();
-  }).catch(function (response) {
-    console.log(response.data['data']);
-  });
+    setAddress(templogin);
+  },[]);
 
-  document.title = "Greedy Goblins";
-
-}, []);
+  async function checkCookies(){
+    if(!templogin) return;
+    if (cookies.get('refreshToken')){
+      cookies.set('refreshToken', `${cookies.get('refreshToken')}`, { path: '/' });
+    }else{
+      cookies.set('refreshToken', `${templogin}`, { path: '/' });
+    }
+  }
+  async function updateCookies(){
+    if(!templogin) return;
+    cookies.set('refreshToken', `${templogin}`, { path: '/' });
+  }
   async function updateStats(){
     axios({
       method: 'post',
@@ -80,7 +112,6 @@ useEffect(() => {
       data: {"token": templogin},
       config: { headers: {'Content-Type': 'multipart/form-data'}}
     }).then(function (res) {
-      console.log(res.data.sendoff.eggs);
       setEggs(res.data.sendoff.eggs);
       setWorkers(res.data.sendoff.goblins);
       setWood(res.data.sendoff.wood);
@@ -106,8 +137,10 @@ useEffect(() => {
     .then(function (response) {
       templogin = response.data.token;
       if(!templogin) return;
+      updateCookies();
       setloggedin(true);
       updateStats();
+
     })
     .catch(function (response) {
         //handle error
@@ -121,7 +154,7 @@ useEffect(() => {
       config: { headers: {'Content-Type': 'multipart/form-data'}}
     })
     .then(function (response) {
-      updateStats();
+      //updateStats();
     })
     .catch(function (response) {
         //handle error
@@ -136,7 +169,7 @@ useEffect(() => {
     })
     .then(function (response) {
       console.log(response);
-      updateStats();
+      //updateStats();
     })
     .catch(function (response) {
         //handle error
@@ -157,8 +190,8 @@ useEffect(() => {
           </div>
           <div className="flex flex-col items-center pb-10">
             <img className="mb-3 w-24 h-24 rounded-full shadow-lg" src="https://www.meeplemountain.com/wp-content/uploads/2019/06/dimble.jpg" alt="goglim"/>
-            {loggedin === null && <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">Goblin Kings</h5>}
-            {loggedin !== null && <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white overflow-hidden">{truncateEthAddress(Address)}</h5>}
+            {Address === null && <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">{Address}</h5>}
+            {Address !== null && <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white overflow-hidden">{truncateEthAddress(Address)}</h5>}
             <span className="text-sm text-gray-500 dark:text-gray-400">Gold Owned: <b>10</b></span>
             <div className="flex mt-4 space-x-3 md:mt-6">
               <a href="#" className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Crack Egg</a>
