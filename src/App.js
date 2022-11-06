@@ -26,7 +26,7 @@ const App = () =>{
 useEffect(() => {
   // axios({
   //   method: 'post',
-  //   url: 'https://goglins.vercel.app/GenerateUser',
+  //   url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
   //   data: {"nonce": randomString, "signature": "temps", "address": "temp"},
   //   config: { headers: {"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*'}}
   // }).then(function (response) {
@@ -51,7 +51,7 @@ useEffect(() => {
   async function updateStats(){
     axios({
       method: 'post',
-      url: 'https://goglins.vercel.app/getStats',
+      url: 'https://node-express-vercel-eight.vercel.app/getStats',
       data: {"token": templogin},
       config: { headers: {'Content-Type': 'multipart/form-data'}}
     }).then(function (res) {
@@ -71,7 +71,7 @@ useEffect(() => {
 
     await axios({
       method: 'post',
-      url: 'https://goglins.vercel.app/Authenticate',
+      url: 'https://node-express-vercel-eight.vercel.app/Authenticate',
       data: {"nonce": randomString, "signature": signature, "address": address},
       config: { headers: {'Content-Type': 'multipart/form-data' }}
     })
@@ -88,7 +88,7 @@ useEffect(() => {
   async function verifyCreds(){
     await axios({
       method: 'post',
-      url: 'https://goglins.vercel.app/GenerateUser',
+      url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
       data: {"nonce": randomString, "signature": "temp", "address": "temp"},
       config: { headers: {'Content-Type': 'multipart/form-data'}}
     })
@@ -102,7 +102,7 @@ useEffect(() => {
   async function collectEggs(){
     await axios({
       method: 'post',
-      url: 'https://goglins.vercel.app/collectEggs',
+      url: 'https://node-express-vercel-eight.vercel.app/collectEggs',
       data: {"token": templogin},
       config: { headers: {'Content-Type': 'multipart/form-data'}}
     })
