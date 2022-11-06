@@ -21,20 +21,31 @@ const App = () =>{
   const [loggedin, setloggedin] = useState(null);
   const [Eggs, setEggs] = useState(0);
 //SELECT * FROM users WHERE address='0x3258033547e20C6aF4890D8d86B3F81AB672B1F2'
-
+//'Access-Control-Allow-Origin'
 
 useEffect(() => {
-  axios({
-    method: 'post',
-    url: 'https://goglins.vercel.app/GenerateUser',
-    data: {"nonce": randomString, "signature": "temps", "address": "temp"},
-    config: { headers: {'Content-Type': 'multipart/form-data'}}
-  }).then(function (response) {
-    templogin = response.data.token;
-    if(!templogin) return;
-    updateStats();
-  }).catch(function (response) {
-    console.log(response.data['data']);
+  // axios({
+  //   method: 'post',
+  //   url: 'https://goglins.vercel.app/GenerateUser',
+  //   data: {"nonce": randomString, "signature": "temps", "address": "temp"},
+  //   config: { headers: {"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*'}}
+  // }).then(function (response) {
+  //   templogin = response.data.token;
+  //   if(!templogin) return;
+  //   updateStats();
+  // }).catch(function (response) {
+  //   console.log(response.data['data']);
+  // });
+  axios.post('https://node-express-vercel-eight.vercel.app/generateuser', {
+    "nonce": randomString,
+     "signature": "temps",
+      "address": "temp"
+    })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
   });
 }, []);
   async function updateStats(){
