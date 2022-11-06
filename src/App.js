@@ -36,6 +36,9 @@ useEffect(() => {
   }).catch(function (response) {
     console.log(response.data['data']);
   });
+
+  document.title = "Greedy Goblins";
+
 }, []);
   async function updateStats(){
     axios({
@@ -105,6 +108,7 @@ useEffect(() => {
   }
   
   return (
+
     <div className=' bg-gray-900 w-screen min-h-screen grid place-items-center'>
       <div className='p-4 max-w-5xl grid gap-4'>
 
