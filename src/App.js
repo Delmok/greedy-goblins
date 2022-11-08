@@ -18,6 +18,7 @@ const App = () =>{
   const [Eggs, setEggs] = useState(0);
   const [Workers, setWorkers] = useState(0);
   const [Wood, setWood] = useState(0);
+  const [GoblinHut, setGoblinut] = useState(0);
   const [Address, setAddress] = useState('Goblin King');
 //SELECT * FROM users WHERE address='0x3258033547e20C6aF4890D8d86B3F81AB672B1F2'
 //'Access-Control-Allow-Origin'
@@ -44,17 +45,23 @@ const tabContent = [{
       </div>
 },{
   title:"Worker",
-  content: //
-   
-    <div className=' grid gap-4'>    
-      <div className="grid grid-cols-1 text-white text-center">
-        <div className="flex flex-col w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-          <div className="mb-2 text-3xl font-extrabold">{Workers} / 5</div>
-          <div className="font-light text-gray-500 dark:text-gray-400">Available Workers</div>
-        </div>      
+  content: 
+    <div className=" grid gap-4 flex flex-col pb-10">
+      <div className="flex space-x-3  justify-center">
+        <div className="grid grid-cols-1 text-white text-center">
+          <div className="flex p-4 flex-col w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+            <div className="mb-2 text-3xl font-extrabold">{Workers} / {GoblinHut * 5}</div>
+            <div className="font-light text-gray-500 dark:text-gray-400">Available Workers</div>
+          </div>      
+        </div>
       </div>
-      <Gorkers></Gorkers>
+      <div className="flex space-x-3  justify-center">
+        <a href="#" onClick={async () => { await summonGoblin()}} className=" max-w-xs py-2 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Summon Goblin</a>    
       </div>
+      <Gorkers gWorkers={Workers}></Gorkers>
+    </div>
+
+     
 }];
 
 
@@ -112,6 +119,7 @@ const tabContent = [{
       setWorkers(res.data.sendoff.goblins);
       setWood(res.data.sendoff.wood);
       setAddress(res.data.sendoff.address);
+      setGoblinut(res.data.sendoff.goblinhut)
     }).catch(function (res) {
       console.log(res);
     });
@@ -122,8 +130,20 @@ const tabContent = [{
       url: 'https://node-express-vercel-eight.vercel.app/collectEggs',
       data: {"token": templogin},
       config: { headers: {'Content-Type': 'multipart/form-data'}}
-    }).then(function (res) {
-      updateStats();
+    }).then(async function (res) {
+      await updateStats();
+    }).catch(function (res) {
+      console.log(res);
+    });
+  }
+  async function summonGoblin(){
+    axios({
+      method: 'post',
+      url: 'http://localhost:9002/summonGoblin',
+      data: {"token": templogin},
+      config: { headers: {'Content-Type': 'multipart/form-data'}}
+    }).then(async function (res) {
+      await updateStats();
     }).catch(function (res) {
       console.log(res);
     });
@@ -195,7 +215,7 @@ const tabContent = [{
         <Tab active={0}>
         {tabContent.map((tab, idx) => (
         <Tab.TabPane key={`Tab-${idx}`} tab={tab.title}>
-          <div className='p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800 content-center'>
+          <div className='p-4 rounded-lg md:p-8 dark:bg-gray-800'>
             {tab.content}
           </div>
         </Tab.TabPane>))}

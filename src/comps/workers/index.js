@@ -5,10 +5,12 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 
-const Workers = ({children, active}) => {
+const Workers = (props) => {
     const [theArray, setTheArray] = useState([0,0]);
+    //const [workers, setWorkers] = useState(0);
 
     useEffect(() => {
+        console.log(props);
         axios({
             method: 'post',
             url: 'https://node-express-vercel-eight.vercel.app/MyWorkers',
@@ -19,15 +21,13 @@ const Workers = ({children, active}) => {
             let ownedWorkers = response.data.sendoff;
             let cringe = [];
             for (let i = 0; i < ownedWorkers.length; i++) {
-                console.log(i);
-                cringe.push(ownedWorkers[i])
-                //setTheArray(ownedWorkers[i]);
+                cringe.push(ownedWorkers[i]);
             }
             setTheArray(cringe);
           }).catch(function (response) {
 
           });
-    }, []);
+    }, [props]);
 
     return (
         <>
