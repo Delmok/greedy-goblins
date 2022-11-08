@@ -1,9 +1,10 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import './App.css';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Tab from './comps/tab';
 import Gorkers from './comps/workers';
-import dropdownbutton from './comps/dropdown';
+
 import axios from 'axios';
 import truncateEthAddress from 'truncate-eth-address'
 import Cookies from 'universal-cookie';
@@ -27,7 +28,8 @@ if (cookies.get('refreshToken')){
   templogin = cookies.get('refreshToken');
 }
 
-const tabContent = [{
+const tabContent = [
+  {
   title:"Stats",
   content: 
       <div className="grid grid-cols-1 text-gray-900 dark:text-white text-center">
@@ -44,26 +46,26 @@ const tabContent = [{
               <div className="font-light text-gray-500 dark:text-gray-400">Wood</div>
           </div>
       </div>
-},{
-  title:"Worker",
-  content: 
-    <div className=" grid gap-4 flex flex-col pb-10">
-      <div className="flex space-x-3  justify-center">
-        <div className="grid grid-cols-1 text-white text-center">
-          <div className="flex p-4 flex-col w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <div className="mb-2 text-3xl font-extrabold">{Workers} / {GoblinHut * 5}</div>
-            <div className="font-light text-gray-500 dark:text-gray-400">Available Workers</div>
-          </div>      
+  },
+  {
+    title:"Worker",
+    content: 
+      <div className="  gap-4 flex flex-col pb-10">
+        <div className="flex space-x-3  justify-center">
+          <div className="grid grid-cols-1 text-white text-center">
+            <div className="flex p-4 flex-col w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+              <div className="mb-2 text-3xl font-extrabold">{Workers} / {GoblinHut * 5}</div>
+              <div className="font-light text-gray-500 dark:text-gray-400">Available Workers</div>
+            </div>      
+          </div>
         </div>
+        <div className="flex space-x-3  justify-center">
+          <a href="#" onClick={async () => { await summonGoblin()}} className=" max-w-xs py-2 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Summon Goblin</a>    
+        </div>
+        <Gorkers gWorkers={Workers}></Gorkers>
       </div>
-      <div className="flex space-x-3  justify-center">
-        <a href="#" onClick={async () => { await summonGoblin()}} className=" max-w-xs py-2 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Summon Goblin</a>    
-      </div>
-      <Gorkers gWorkers={Workers}></Gorkers>
-    </div>
-
-     
-}];
+   }
+  ];
 
 
   checkCookies();
@@ -125,10 +127,22 @@ const tabContent = [{
       console.log(res);
     });
   }
-  async function collectEggs(){
+  async function collectResources(){
     axios({
       method: 'post',
-      url: 'https://node-express-vercel-eight.vercel.app/collectEggs',
+      url: 'https://node-express-vercel-eight.vercel.app/collecteggs',
+      data: {"token": templogin},
+      config: { headers: {'Content-Type': 'multipart/form-data'}}
+    }).then(async function (res) {
+      await updateStats();
+    }).catch(function (res) {
+      console.log(res);
+    });
+  }
+  async function levelUpGoblinHut(){
+    axios({
+      method: 'post',
+      url: 'https://node-express-vercel-eight.vercel.app/levelup/goblinhut',
       data: {"token": templogin},
       config: { headers: {'Content-Type': 'multipart/form-data'}}
     }).then(async function (res) {
@@ -175,21 +189,7 @@ const tabContent = [{
         //handle error
     });
   }
-  async function verifyCreds(){
-    await axios({
-      method: 'post',
-      url: 'https://node-express-vercel-eight.vercel.app/GenerateUser',
-      data: {"nonce": randomString, "signature": "temp", "address": "temp"},
-      config: { headers: {'Content-Type': 'multipart/form-data'}}
-    })
-    .then(function (response) {
-      //updateStats();
-    })
-    .catch(function (response) {
-        //handle error
-    });
-  }
-
+  
   return (
 
     <div className=' bg-gray-900 w-screen min-h-screen grid place-items-center'>
@@ -200,7 +200,7 @@ const tabContent = [{
           <div className="flex justify-end px-4 pt-4">
 
           {loggedin === null && <button  onClick={async () => { await connect() }}className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Connect</button>}
-          {loggedin !== null && <button  onClick={async () => { await collectEggs() }}className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Switch</button>}
+          {loggedin !== null && <button  onClick={async () => { await collectResources() }}className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Switch</button>}
           </div>
           <div className="flex flex-col items-center pb-10">
             <img className="mb-3 w-24 h-24 rounded-full shadow-lg" src="https://www.meeplemountain.com/wp-content/uploads/2019/06/dimble.jpg" alt="goglim"/>
@@ -208,7 +208,11 @@ const tabContent = [{
             {Address !== null && <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white overflow-hidden">{truncateEthAddress(Address)}</h5>}
             <span className="text-sm text-gray-500 dark:text-gray-400">Gold Owned: <b>10</b></span>
             <div className="flex mt-4 space-x-3 md:mt-6">
-              <a href="#" onClick={async () => { await collectEggs() }} className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Collect Goblin Eggs</a>
+              <a href="#" onClick={async () => { await collectResources() }} className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Collect Resources</a>
+              
+            </div>
+            <div className="flex mt-4 space-x-3 md:mt-6">
+              <a href="#" onClick={async () => { await levelUpGoblinHut() }} className="inline-flex items-center py-2 px-4 text-sm font-medium text-center text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Level Up Goblin Hut</a>
               
             </div>
           </div>
